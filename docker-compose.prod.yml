@@ -1,0 +1,51 @@
+services:
+  # Your original app service
+  app:
+    container_name: ${APP_NAME}
+    build: .
+    volumes:
+      - .:/var/www
+    depends_on:
+      - mysql
+      - redis
+    networks:
+      - app-network
+
+  # Your original mysql service
+  mysql:
+    container_name: ${APP_NAME}_mysql
+    image: 'mysql/mysql-server:8.0'
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ${DB_DATABASE}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+    volumes:
+      - app-mysql:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      retries: 3
+      timeout: 5s
+
+  # Your original redis service
+  redis:
+    container_name: ${APP_NAME}_redis
+    image: 'redis:alpine'
+    volumes:
+      - app-redis:/data/redis
+    networks:
+      - app-network
+
+# Combine volumes from both files
+volumes:
+  app-redis:
+    driver: local
+  app-mysql:
+    driver: local
+
+# Keep the same network
+networks:
+  app-network:
+    driver: bridge
