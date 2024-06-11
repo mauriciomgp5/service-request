@@ -111,7 +111,11 @@ class ServiceRequestResource extends Resource
                     ->badgeColor('success')
                     ->action(function (ServiceRequest $serviceRequest) {
                         $serviceRequest->likes()->unlike()->byUser(auth()->user())->delete();
-                        $serviceRequest->likes()->create(['type' => 'like', 'user_id' => auth()->id()]);
+                        if ($serviceRequest->likes()->like()->byUser(auth()->user())->exists()) {
+                            $serviceRequest->likes()->like()->byUser(auth()->user())->delete();
+                        } else {
+                            $serviceRequest->likes()->create(['type' => 'like', 'user_id' => auth()->id()]);
+                        }
                     })
                     ->icon('heroicon-o-hand-thumb-up'),
 
@@ -122,7 +126,11 @@ class ServiceRequestResource extends Resource
                     ->badgeColor('danger')
                     ->action(function (ServiceRequest $serviceRequest) {
                         $serviceRequest->likes()->like()->byUser(auth()->user())->delete();
-                        $serviceRequest->likes()->create(['type' => 'unlike', 'user_id' => auth()->id()]);
+                        if ($serviceRequest->likes()->unlike()->byUser(auth()->user())->exists()) {
+                            $serviceRequest->likes()->unlike()->byUser(auth()->user())->delete();
+                        } else {
+                            $serviceRequest->likes()->create(['type' => 'unlike', 'user_id' => auth()->id()]);
+                        }
                     })
                     ->icon('heroicon-o-hand-thumb-down'),
 
