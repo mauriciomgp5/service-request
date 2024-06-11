@@ -55,6 +55,5 @@ class Register extends AuthRegister
     {
         //mask phone
         $this->data['phone'] = preg_replace('/(\d{2})(\d{5})(\d{4})/', '($1) $2-$3', $this->data['phone']);
-        dd($this->data);
     }
 }
