@@ -10,6 +10,7 @@ class Comment extends Model
     use HasFactory;
 
     protected $fillable = [
+        'created_by',
         'content',
         'is_public',
         'meta',
