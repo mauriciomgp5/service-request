@@ -2,6 +2,8 @@
 
 namespace App\Providers\Filament;
 
+use App\Filament\Pages\Auth\Profile;
+use App\Filament\Pages\Auth\Register;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
@@ -25,8 +27,13 @@ class AdminPanelProvider extends PanelProvider
         return $panel
             ->default()
             ->id('admin')
+            ->brandName('MGP Chamados')
             ->path('admin')
             ->login()
+            ->registration(Register::class)
+            ->passwordReset()
+            ->emailVerification()
+            ->profile(Profile::class)
             ->colors([
                 'primary' => Color::Amber,
             ])
