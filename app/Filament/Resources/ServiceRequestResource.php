@@ -120,7 +120,10 @@ class ServiceRequestResource extends Resource
                     })
                     ->icon('heroicon-o-hand-thumb-down'),
 
-                Tables\Actions\EditAction::make(),
+                Tables\Actions\EditAction::make()
+                    ->visible(fn ($record) => $record->created_by === auth()->id()),
+
+                Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([

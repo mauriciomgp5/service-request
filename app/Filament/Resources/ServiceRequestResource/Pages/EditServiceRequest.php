@@ -16,4 +16,10 @@ class EditServiceRequest extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+
+    protected function authorizeAccess(): void
+    {
+        abort_unless($this->record->created_by === auth()->id(), 403);
+    }
 }

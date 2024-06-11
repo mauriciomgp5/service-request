@@ -20,7 +20,6 @@ class CreateServiceRequest extends CreateRecord
     {
         $data['created_by'] = auth()->id();
         $data['status'] = ServiceRequestStatusEnum::OPEN;
-
         return $data;
     }
 }
