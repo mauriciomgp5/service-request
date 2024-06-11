@@ -1,0 +1,117 @@
+<?php
+
+namespace App\Filament\Resources;
+
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use App\Models\ServiceRequest;
+use Filament\Resources\Resource;
+use App\Enums\ServiceRequestSectorEnum;
+use App\Enums\ServiceRequestPriorityEnum;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use App\Filament\Resources\ServiceRequestResource\Pages;
+use App\Filament\Resources\ServiceRequestResource\RelationManagers;
+
+class ServiceRequestResource extends Resource
+{
+    protected static ?string $model = ServiceRequest::class;
+
+    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    public static function form(Form $form): Form
+    {
+        return $form
+            ->schema([
+                Forms\Components\TextInput::make('title')
+                    ->label('Titulo')
+                    ->required()
+                    ->maxLength(255),
+
+                Forms\Components\Textarea::make('description')
+                    ->label('Descrição')
+                    ->required()
+                    ->columnSpanFull(),
+
+                Forms\Components\Select::make('sector')
+                    ->label('Setor')
+                    ->required()
+                    ->options(ServiceRequestSectorEnum::class),
+
+                Forms\Components\Select::make('priority')
+                    ->options(ServiceRequestPriorityEnum::class)
+                    ->label('Prioridade')
+                    ->required(),
+
+                Forms\Components\Select::make('assigned_to')
+                    ->label('Atribuído a')
+                    ->relationship('createdBy', 'name'),
+
+                Forms\Components\FileUpload::make('attachments')
+                    ->label('Anexos')
+                    ->disk('local')
+                    ->directory('service-requests'),
+            ]);
+    }
+
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                Tables\Columns\TextColumn::make('title')
+                    ->label('Título')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('sector')
+                    ->label('Setor')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('priority')
+                    ->label('Prioridade')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('assignedTo.name')
+                    ->label('Atribuído a')
+                    ->numeric()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('status')
+                    ->searchable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label('Criado em')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+                Tables\Columns\TextColumn::make('updated_at')
+                    ->label('Atualizado em')
+                    ->dateTime()
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
+            ])
+            ->filters([
+                //
+            ])
+            ->actions([
+                Tables\Actions\EditAction::make(),
+            ])
+            ->bulkActions([
+                Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\DeleteBulkAction::make(),
+                ]),
+            ])->defaultSort('created_at', 'desc');
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            RelationManagers\CommentsRelationManager::class,
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListServiceRequests::route('/'),
+            'create' => Pages\CreateServiceRequest::route('/create'),
+            'edit' => Pages\EditServiceRequest::route('/{record}/edit'),
+        ];
+    }
+}
