@@ -17,9 +17,10 @@ use App\Filament\Resources\ServiceRequestResource\RelationManagers;
 
 class ServiceRequestResource extends Resource
 {
+    protected static ?string $label = 'Chamado';
     protected static ?string $model = ServiceRequest::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+    protected static ?string $navigationIcon = 'heroicon-o-wrench-screwdriver';
 
     public static function form(Form $form): Form
     {
@@ -68,12 +69,15 @@ class ServiceRequestResource extends Resource
                     ->searchable(),
                 Tables\Columns\TextColumn::make('priority')
                     ->label('Prioridade')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('assignedTo.name')
                     ->label('Atribuído a')
                     ->numeric()
                     ->sortable(),
                 Tables\Columns\TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
                     ->searchable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
@@ -90,6 +94,28 @@ class ServiceRequestResource extends Resource
                 //
             ])
             ->actions([
+                Tables\Actions\Action::make('like')
+                    ->label(false)
+                    ->color('success')
+                    ->badge(fn (ServiceRequest $serviceRequest) => $serviceRequest->likes()->like()->count())
+                    ->badgeColor('success')
+                    ->action(function (ServiceRequest $serviceRequest) {
+                        $serviceRequest->likes()->unlike()->byUser(auth()->user())->delete();
+                        $serviceRequest->likes()->create(['type' => 'like', 'user_id' => auth()->id()]);
+                    })
+                    ->icon('heroicon-o-hand-thumb-up'),
+
+                Tables\Actions\Action::make('unlike')
+                    ->label(false)
+                    ->color('danger')
+                    ->badge(fn (ServiceRequest $serviceRequest) => $serviceRequest->likes()->unlike()->count())
+                    ->badgeColor('danger')
+                    ->action(function (ServiceRequest $serviceRequest) {
+                        $serviceRequest->likes()->like()->byUser(auth()->user())->delete();
+                        $serviceRequest->likes()->create(['type' => 'unlike', 'user_id' => auth()->id()]);
+                    })
+                    ->icon('heroicon-o-hand-thumb-down'),
+
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([

@@ -26,10 +26,10 @@ enum ServiceRequestPriorityEnum: string implements HasLabel, HasColor
     public function getColor(): string | array | null
     {
         return match ($this) {
-            self::LOW => 'green',
-            self::MEDIUM => 'yellow',
-            self::HIGH => 'orange',
-            self::URGENT => 'red',
+            self::LOW => 'gray',
+            self::MEDIUM => 'info',
+            self::HIGH => 'warning',
+            self::URGENT => 'danger',
         };
     }
 }

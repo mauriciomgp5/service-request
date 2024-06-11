@@ -26,9 +26,9 @@ enum ServiceRequestStatusEnum: string implements HasLabel, HasColor
     public function getColor(): string | array | null
     {
         return match ($this) {
-            self::OPEN => 'blue',
-            self::REJECTED => 'red',
-            self::IN_PROGRESS => 'yellow',
+            self::OPEN => 'info',
+            self::REJECTED => 'danger',
+            self::IN_PROGRESS => 'gray',
             self::CLOSED => 'green',
         };
     }
