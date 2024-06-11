@@ -44,11 +44,15 @@ class ServiceRequestResource extends Resource
                 Forms\Components\Select::make('priority')
                     ->options(ServiceRequestPriorityEnum::class)
                     ->label('Prioridade')
+                    ->default(ServiceRequestPriorityEnum::MEDIUM->value)
                     ->required(),
 
                 Forms\Components\Select::make('assigned_to')
                     ->label('Atribuído a')
-                    ->relationship('createdBy', 'name'),
+                    ->required()
+                    ->relationship('createdBy', 'name', modifyQueryUsing: function (Builder $query) {
+                        $query->where('is_active', true)->where('is_admin', true);
+                    }),
 
                 Forms\Components\FileUpload::make('attachments')
                     ->label('Anexos')
