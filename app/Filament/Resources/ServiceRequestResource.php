@@ -68,26 +68,32 @@ class ServiceRequestResource extends Resource
                 Tables\Columns\TextColumn::make('title')
                     ->label('Título')
                     ->searchable(),
+
                 Tables\Columns\TextColumn::make('sector')
                     ->label('Setor')
                     ->searchable(),
+
                 Tables\Columns\TextColumn::make('priority')
                     ->label('Prioridade')
                     ->badge()
                     ->searchable(),
+
                 Tables\Columns\TextColumn::make('assignedTo.name')
                     ->label('Atribuído a')
                     ->numeric()
                     ->sortable(),
+
                 Tables\Columns\TextColumn::make('status')
                     ->label('Status')
                     ->badge()
                     ->searchable(),
+
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
+
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Atualizado em')
                     ->dateTime()
