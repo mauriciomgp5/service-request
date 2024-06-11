@@ -2,17 +2,18 @@
 
 namespace App\Filament\Resources;
 
-use App\Enums\ServiceRequestPriorityEnum;
+use Filament\Forms;
+use Filament\Tables;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use App\Models\ServiceRequest;
+use Filament\Resources\Resource;
 use App\Enums\ServiceRequestSectorEnum;
+use Illuminate\Database\Eloquent\Model;
+use App\Enums\ServiceRequestPriorityEnum;
+use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ServiceRequestResource\Pages;
 use App\Filament\Resources\ServiceRequestResource\RelationManagers;
-use App\Models\ServiceRequest;
-use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class ServiceRequestResource extends Resource
 {
@@ -138,10 +139,19 @@ class ServiceRequestResource extends Resource
                     ->visible(fn ($record) => $record->created_by === auth()->id()),
 
                 Tables\Actions\ViewAction::make(),
+
+                Tables\Actions\Action::make('approve')
+                    ->label('Aprovar')
+                    ->color('success')
+                    ->visible(fn () => auth()->user()?->is_admin ?? false)
+                    ->action(function (ServiceRequest $serviceRequest) {
+                        $serviceRequest->update(['approved_at' => now()]);
+                    })
+                    ->icon('heroicon-o-check-circle'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->visible(fn () => auth()->user()?->is_admin ?? false),
                 ]),
             ])->defaultSort('created_at', 'desc');
     }

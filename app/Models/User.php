@@ -55,14 +55,18 @@ class User extends Authenticatable implements FilamentUser
 
     public function canAccessPanel(Panel $panel): bool
     {
-        if ($this->is_admin) {
+        if ($this->is_active && $this->approved_at !== null) {
             return true;
         }
-        Notification::make()
-            ->title('Aguarde!')
-            ->body('Seu acesso ainda não foi liberado.')
-            ->warning()
-            ->send();
+        if ($this->is_active && $this->approved_at === null) {
+            Notification::make()
+                ->title('Aguarde!')
+                ->body('Seu acesso ainda não foi liberado.')
+                ->warning()
+                ->duration(7000)
+                ->send();
+            return false;
+        }
         return false;
     }
 }

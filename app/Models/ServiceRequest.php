@@ -25,6 +25,7 @@ class ServiceRequest extends Model
         'status',
         'attachments',
         'created_by',
+        'approved_at'
     ];
 
     protected $casts = [
@@ -35,6 +36,7 @@ class ServiceRequest extends Model
         'scheduled_at' => 'datetime',
         'started_at' => 'datetime',
         'completed_at' => 'datetime',
+        'approved_at' => 'datetime',
     ];
 
     public function createdBy()
