@@ -24,7 +24,7 @@ class ServiceRequest extends Model
         'assigned_to',
         'status',
         'attachments',
-        'created_by'
+        'created_by',
     ];
 
     protected $casts = [

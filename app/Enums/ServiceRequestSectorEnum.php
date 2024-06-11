@@ -6,7 +6,6 @@ use Filament\Support\Contracts\HasLabel;
 
 enum ServiceRequestSectorEnum: string implements HasLabel
 {
-
     case EXTERNAL_TECHNICIAN = 'external_technician';
     case IT = 'ti';
     case MAINTENANCE = 'maintenance';

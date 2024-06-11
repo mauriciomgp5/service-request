@@ -2,7 +2,6 @@
 
 namespace App\Filament\Pages\Auth;
 
-use Filament\Pages\Page;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Auth\EditProfile;
@@ -29,6 +28,7 @@ class Profile extends EditProfile
     protected function mutateFormDataBeforeRegister(array $data): array
     {
         $data['phone'] = preg_replace('/[^0-9]/', '', $data['phone']);
+
         return $data;
     }
 
@@ -39,6 +39,7 @@ class Profile extends EditProfile
             ->label('Celular')
             ->unique(modifyRuleUsing: function ($rule, $state) {
                 dd($rule, $state);
+
                 return $rule->where('column', 'phone');
             })
             ->required()

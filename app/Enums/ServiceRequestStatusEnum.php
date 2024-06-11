@@ -5,9 +5,8 @@ namespace App\Enums;
 use Filament\Support\Contracts\HasColor;
 use Filament\Support\Contracts\HasLabel;
 
-enum ServiceRequestStatusEnum: string implements HasLabel, HasColor
+enum ServiceRequestStatusEnum: string implements HasColor, HasLabel
 {
-
     case OPEN = 'open';
     case REJECTED = 'rejected';
     case IN_PROGRESS = 'in_progress';
@@ -23,7 +22,7 @@ enum ServiceRequestStatusEnum: string implements HasLabel, HasColor
         };
     }
 
-    public function getColor(): string | array | null
+    public function getColor(): string|array|null
     {
         return match ($this) {
             self::OPEN => 'info',

@@ -4,7 +4,6 @@ namespace App\Filament\Resources\ServiceRequestResource\Pages;
 
 use App\Enums\ServiceRequestStatusEnum;
 use App\Filament\Resources\ServiceRequestResource;
-use Filament\Actions;
 use Filament\Resources\Pages\CreateRecord;
 
 class CreateServiceRequest extends CreateRecord
@@ -20,6 +19,7 @@ class CreateServiceRequest extends CreateRecord
     {
         $data['created_by'] = auth()->id();
         $data['status'] = ServiceRequestStatusEnum::OPEN;
+
         return $data;
     }
 }

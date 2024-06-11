@@ -3,17 +3,15 @@
 namespace App\Filament\Resources\ServiceRequestResource\RelationManagers;
 
 use Filament\Forms;
-use Filament\Tables;
 use Filament\Forms\Form;
-use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
+use Filament\Tables;
+use Filament\Tables\Table;
 
 class CommentsRelationManager extends RelationManager
 {
     protected static ?string $title = 'Comentários';
+
     protected static string $relationship = 'comments';
 
     public function form(Form $form): Form
@@ -47,6 +45,7 @@ class CommentsRelationManager extends RelationManager
                     ->modalHeading('Novo Comentário')
                     ->mutateFormDataUsing(function (array $data) {
                         $data['created_by'] = auth()->id();
+
                         return $data;
                     })
                     ->label('Novo Comentário'),

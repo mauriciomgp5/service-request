@@ -2,11 +2,10 @@
 
 namespace App\Filament\Pages\Auth;
 
-use Filament\Pages\Page;
-use Illuminate\Validation\Rules\Unique;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Pages\Auth\Register as AuthRegister;
+use Illuminate\Validation\Rules\Unique;
 
 class Register extends AuthRegister
 {
@@ -30,6 +29,7 @@ class Register extends AuthRegister
     protected function mutateFormDataBeforeRegister(array $data): array
     {
         $data['phone'] = preg_replace('/[^0-9]/', '', $data['phone']);
+
         return $data;
     }
 

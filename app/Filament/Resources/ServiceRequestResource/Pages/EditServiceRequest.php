@@ -17,7 +17,6 @@ class EditServiceRequest extends EditRecord
         ];
     }
 
-
     protected function authorizeAccess(): void
     {
         abort_unless($this->record->created_by === auth()->id(), 403);
