@@ -1,11 +1,5 @@
-<p align="center"><a href="#" target="_blank"><img src="logo.png" width="400" alt="Request Service Logo"></a></p>
+<p align="center"><a href="#" target="_blank"><h1>Service Request</h1></a></p>
 
-<p align="center">
-<a href="https://github.com/mauriciomgp5/request-service/actions"><img src="https://github.com/mauriciomgp5/request-service/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/mauriciomgp5/request-service"><img src="https://img.shields.io/packagist/dt/mauriciomgp5/request-service" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/mauriciomgp5/request-service"><img src="https://img.shields.io/packagist/v/mauriciomgp5/request-service" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/mauriciomgp5/request-service"><img src="https://img.shields.io/packagist/l/mauriciomgp5/request-service" alt="License"></a>
-</p>
 
 ## About Request Service
 
