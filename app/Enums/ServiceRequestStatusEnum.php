@@ -11,6 +11,7 @@ enum ServiceRequestStatusEnum: string implements HasColor, HasLabel
     case REJECTED = 'rejected';
     case IN_PROGRESS = 'in_progress';
     case CLOSED = 'closed';
+    case SCHEDULED = 'scheduled';
 
     public function getLabel(): string
     {
@@ -19,6 +20,7 @@ enum ServiceRequestStatusEnum: string implements HasColor, HasLabel
             self::REJECTED => 'Rejeitado',
             self::IN_PROGRESS => 'Em andamento',
             self::CLOSED => 'Fechado',
+            self::SCHEDULED => 'Agendado',
         };
     }
 
@@ -28,7 +30,8 @@ enum ServiceRequestStatusEnum: string implements HasColor, HasLabel
             self::OPEN => 'info',
             self::REJECTED => 'danger',
             self::IN_PROGRESS => 'gray',
-            self::CLOSED => 'green',
+            self::CLOSED => 'success',
+            self::SCHEDULED => 'warning',
         };
     }
 }

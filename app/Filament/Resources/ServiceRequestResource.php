@@ -14,6 +14,7 @@ use App\Enums\ServiceRequestPriorityEnum;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\ServiceRequestResource\Pages;
 use App\Filament\Resources\ServiceRequestResource\RelationManagers;
+use App\Models\User;
 
 class ServiceRequestResource extends Resource
 {
@@ -53,7 +54,10 @@ class ServiceRequestResource extends Resource
                     ->required()
                     ->relationship('createdBy', 'name', modifyQueryUsing: function (Builder $query) {
                         $query->where('is_active', true)->where('is_admin', true);
-                    }),
+                    })
+                    ->default(fn () => User::where('is_active', true)->where('is_admin', true)->first()?->getKey())
+                    ->searchable()
+                    ->preload(),
 
                 Forms\Components\FileUpload::make('attachments')
                     ->label('Anexos')
@@ -68,6 +72,7 @@ class ServiceRequestResource extends Resource
             ->columns([
                 Tables\Columns\TextColumn::make('title')
                     ->label('Título')
+                    ->limit(30)
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('sector')
@@ -80,8 +85,7 @@ class ServiceRequestResource extends Resource
                     ->searchable(),
 
                 Tables\Columns\TextColumn::make('assignedTo.name')
-                    ->label('Atribuído a')
-                    ->numeric()
+                    ->label('Responsável')
                     ->sortable(),
 
                 Tables\Columns\TextColumn::make('status')
@@ -93,7 +97,7 @@ class ServiceRequestResource extends Resource
                     ->label('Criado em')
                     ->dateTime()
                     ->sortable()
-                    ->toggleable(isToggledHiddenByDefault: true),
+                    ->toggleable(isToggledHiddenByDefault: false),
 
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Atualizado em')
@@ -106,7 +110,7 @@ class ServiceRequestResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('like')
-                    ->label('Up')
+                    ->label('')
                     ->color('success')
                     ->badge(fn (ServiceRequest $serviceRequest) => $serviceRequest->likes()->like()->count())
                     ->badgeColor('success')
@@ -121,7 +125,7 @@ class ServiceRequestResource extends Resource
                     ->icon('heroicon-o-hand-thumb-up'),
 
                 Tables\Actions\Action::make('unlike')
-                    ->label('Down')
+                    ->label('')
                     ->color('danger')
                     ->badge(fn (ServiceRequest $serviceRequest) => $serviceRequest->likes()->unlike()->count())
                     ->badgeColor('danger')
@@ -139,15 +143,6 @@ class ServiceRequestResource extends Resource
                     ->visible(fn ($record) => $record->created_by === auth()->id()),
 
                 Tables\Actions\ViewAction::make(),
-
-                Tables\Actions\Action::make('approve')
-                    ->label('Aprovar')
-                    ->color('success')
-                    ->visible(fn () => auth()->user()?->is_admin ?? false)
-                    ->action(function (ServiceRequest $serviceRequest) {
-                        $serviceRequest->update(['approved_at' => now()]);
-                    })
-                    ->icon('heroicon-o-check-circle'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -160,6 +155,7 @@ class ServiceRequestResource extends Resource
     {
         return [
             RelationManagers\CommentsRelationManager::class,
+            RelationManagers\LogsRelationManager::class,
         ];
     }
 

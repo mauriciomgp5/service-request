@@ -2,13 +2,16 @@
 
 namespace App\Models;
 
-use App\Enums\ServiceRequestPriorityEnum;
 use App\Enums\ServiceRequestSectorEnum;
 use App\Enums\ServiceRequestStatusEnum;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Enums\ServiceRequestPriorityEnum;
+use App\Observers\ServiceRequestObserver;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 
+#[ObservedBy([ServiceRequestObserver::class])]
 class ServiceRequest extends Model
 {
     use HasFactory;
@@ -57,5 +60,10 @@ class ServiceRequest extends Model
     public function likes(): HasMany
     {
         return $this->hasMany(Like::class);
+    }
+
+    public function logs()
+    {
+        return $this->morphMany(Log::class, 'loggable');
     }
 }
