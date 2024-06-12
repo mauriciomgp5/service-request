@@ -106,7 +106,7 @@ class ServiceRequestResource extends Resource
             ])
             ->actions([
                 Tables\Actions\Action::make('like')
-                    ->label(null)
+                    ->label('Up')
                     ->color('success')
                     ->badge(fn (ServiceRequest $serviceRequest) => $serviceRequest->likes()->like()->count())
                     ->badgeColor('success')
@@ -121,7 +121,7 @@ class ServiceRequestResource extends Resource
                     ->icon('heroicon-o-hand-thumb-up'),
 
                 Tables\Actions\Action::make('unlike')
-                    ->label(null)
+                    ->label('Down')
                     ->color('danger')
                     ->badge(fn (ServiceRequest $serviceRequest) => $serviceRequest->likes()->unlike()->count())
                     ->badgeColor('danger')
