@@ -150,7 +150,7 @@ class ServiceRequestResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()->visible(fn() => auth()->user()?->is_admin ?? false),
                 ]),
-            ])->defaultSort('created_at', 'desc');
+            ])->defaultSort('updated_at', 'desc');
     }
 
     public static function getRelations(): array
