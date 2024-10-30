@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Enums\ServiceRequestStatusEnum;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
@@ -108,7 +109,15 @@ class ServiceRequestResource extends Resource
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                //
+                Tables\Filters\SelectFilter::make('status')
+                    ->label('Status')
+                    ->multiple()
+                    ->options(ServiceRequestStatusEnum::class)
+                    ->default([ServiceRequestStatusEnum::OPEN->value, ServiceRequestStatusEnum::IN_PROGRESS->value, ServiceRequestStatusEnum::SCHEDULED->value]),
+                Tables\Filters\SelectFilter::make('sector')
+                    ->label('Setores')
+                    ->multiple()
+                    ->options(ServiceRequestSectorEnum::class),
             ])
             ->actions([
                 Tables\Actions\Action::make('like')
