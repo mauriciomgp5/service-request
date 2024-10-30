@@ -15,20 +15,22 @@ enum ServiceRequestSectorEnum: string implements HasLabel
     case SECHEDULE = 'schedule';
     case SECURITY = 'security';
     case CANCELAMENT = 'cancelament';
+    case STOCK = 'stock';
     case OTHER = 'other';
 
     public function getLabel(): string
     {
         return match ($this) {
-            self::EXTERNAL_TECHNICIAN => 'Técnico Externo',
-            self::IT => 'TI',
-            self::MAINTENANCE => 'Manutenção',
-            self::HR => 'RH',
-            self::FINANCIAL => 'Financeiro',
             self::ADMINISTRATIVE => 'Administrativo',
             self::SECHEDULE => 'Agendamento',
-            self::SECURITY => 'Segurança',
             self::CANCELAMENT => 'Cancelamento',
+            self::STOCK => 'Estoque',
+            self::FINANCIAL => 'Financeiro',
+            self::HR => 'RH',
+            self::IT => 'TI',
+            self::MAINTENANCE => 'Manutenção',
+            self::SECURITY => 'Segurança',
+            self::EXTERNAL_TECHNICIAN => 'Técnico Externo',
             self::OTHER => 'Outro',
         };
     }

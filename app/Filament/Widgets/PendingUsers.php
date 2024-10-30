@@ -12,9 +12,11 @@ use Filament\Widgets\TableWidget as BaseWidget;
 
 class PendingUsers extends BaseWidget
 {
-    protected int | string | array $columnSpan = 'full';
 
-    protected function getTableHeading(): string | Htmlable | null
+    protected static ?int $sort = 1;
+    protected int|string|array $columnSpan = 'full';
+
+    protected function getTableHeading(): string|Htmlable|null
     {
         return 'Usuários Pendentes';
     }
@@ -49,7 +51,7 @@ class PendingUsers extends BaseWidget
                     ->label('Aprovar')
                     ->color('success')
                     ->requiresConfirmation()
-                    ->visible(fn () => auth()->user()?->is_admin ?? false)
+                    ->visible(fn() => auth()->user()?->is_admin ?? false)
                     ->action(function (User $user) {
                         $user->update([
                             'is_active' => true,
