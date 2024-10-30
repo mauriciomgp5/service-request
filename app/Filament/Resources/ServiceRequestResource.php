@@ -55,13 +55,15 @@ class ServiceRequestResource extends Resource
                     ->relationship('createdBy', 'name', modifyQueryUsing: function (Builder $query) {
                         $query->where('is_active', true)->where('is_admin', true);
                     })
-                    ->default(fn () => User::where('is_active', true)->where('is_admin', true)->first()?->getKey())
+                    ->default(fn() => User::where('is_active', true)->where('is_admin', true)->first()?->getKey())
                     ->searchable()
                     ->preload(),
 
                 Forms\Components\FileUpload::make('attachments')
                     ->label('Anexos')
                     ->disk('local')
+                    ->visibility('public')
+                    ->openable()
                     ->directory('service-requests'),
             ]);
     }
@@ -112,7 +114,7 @@ class ServiceRequestResource extends Resource
                 Tables\Actions\Action::make('like')
                     ->label('')
                     ->color('success')
-                    ->badge(fn (ServiceRequest $serviceRequest) => $serviceRequest->likes()->like()->count())
+                    ->badge(fn(ServiceRequest $serviceRequest) => $serviceRequest->likes()->like()->count())
                     ->badgeColor('success')
                     ->action(function (ServiceRequest $serviceRequest) {
                         $serviceRequest->likes()->unlike()->byUser(auth()->user())->delete();
@@ -127,7 +129,7 @@ class ServiceRequestResource extends Resource
                 Tables\Actions\Action::make('unlike')
                     ->label('')
                     ->color('danger')
-                    ->badge(fn (ServiceRequest $serviceRequest) => $serviceRequest->likes()->unlike()->count())
+                    ->badge(fn(ServiceRequest $serviceRequest) => $serviceRequest->likes()->unlike()->count())
                     ->badgeColor('danger')
                     ->action(function (ServiceRequest $serviceRequest) {
                         $serviceRequest->likes()->like()->byUser(auth()->user())->delete();
@@ -140,13 +142,13 @@ class ServiceRequestResource extends Resource
                     ->icon('heroicon-o-hand-thumb-down'),
 
                 Tables\Actions\EditAction::make()
-                    ->visible(fn ($record) => $record->created_by === auth()->id()),
+                    ->visible(fn($record) => $record->created_by === auth()->id() || auth()->user()?->is_admin ?? false),
 
                 Tables\Actions\ViewAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make()->visible(fn () => auth()->user()?->is_admin ?? false),
+                    Tables\Actions\DeleteBulkAction::make()->visible(fn() => auth()->user()?->is_admin ?? false),
                 ]),
             ])->defaultSort('created_at', 'desc');
     }

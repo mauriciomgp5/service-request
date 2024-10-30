@@ -2,14 +2,15 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\UserResource\Pages;
-use App\Models\User;
 use Filament\Forms;
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
+use App\Models\User;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Illuminate\Database\Eloquent\Model;
+use Filament\Notifications\Notification;
+use App\Filament\Resources\UserResource\Pages;
 
 class UserResource extends Resource
 {
@@ -56,7 +57,7 @@ class UserResource extends Resource
 
                 Forms\Components\TextInput::make('password')
                     ->label('Senha')
-                    ->visible(fn ($record) => is_null($record))
+                    ->visible(fn($record) => is_null($record))
                     ->password()
                     ->required()
                     ->confirmed()
@@ -91,18 +92,18 @@ class UserResource extends Resource
                 Tables\Columns\IconColumn::make('is_active')
                     ->label('Ativo')
                     ->boolean(),
-                Tables\Columns\TextColumn::make('email_verified_at')
-                    ->label('E-mail verificado')
-                    ->dateTime()
+                Tables\Columns\TextColumn::make('approved_at')
+                    ->label('Aprovado em')
+                    ->dateTime('d/m/Y H:i:s')
                     ->sortable(),
                 Tables\Columns\TextColumn::make('created_at')
                     ->label('Criado em')
-                    ->dateTime()
+                    ->dateTime('d/m/Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
                 Tables\Columns\TextColumn::make('updated_at')
                     ->label('Atualizado em')
-                    ->dateTime()
+                    ->dateTime('d/m/Y H:i:s')
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
@@ -111,6 +112,24 @@ class UserResource extends Resource
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\Action::make('approve')
+                    ->label('Aprovar')
+                    ->color('success')
+                    ->requiresConfirmation()
+                    ->visible(fn($record) => $record->is_active && empty ($record->approved_at))
+                    ->action(function (User $user) {
+                        $user->update([
+                            'is_active' => true,
+                            'approved_at' => now()
+                        ]);
+
+                        Notification::make()
+                            ->title('Usuário Aprovado')
+                            ->body("O usuário {$user->name} foi aprovado com sucesso.")
+                            ->success()
+                            ->send();
+                    })
+                    ->icon('heroicon-o-check-circle'),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -137,21 +156,21 @@ class UserResource extends Resource
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->is_admin ?? false;
+        return auth()->user()->isAdmin();
     }
 
     public static function canCreate(): bool
     {
-        return auth()->user()?->is_admin ?? false;
+        return auth()->user()->isAdmin();
     }
 
     public static function canEdit(Model $record): bool
     {
-        return auth()->user()?->is_admin ?? false;
+        return auth()->user()->isAdmin();
     }
 
     public static function canDelete(Model $record): bool
     {
-        return auth()->user()?->is_admin ?? false;
+        return auth()->user()->isAdmin();
     }
 }

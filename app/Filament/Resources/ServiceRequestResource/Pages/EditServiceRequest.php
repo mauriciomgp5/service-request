@@ -24,7 +24,7 @@ class EditServiceRequest extends EditRecord
                         ->required(),
                 ])
                 ->requiresConfirmation()
-                ->visible(fn () => auth()->user()->is_admin && $this->record->status === ServiceRequestStatusEnum::OPEN)
+                ->visible(fn() => auth()->user()->is_admin && $this->record->status === ServiceRequestStatusEnum::OPEN)
                 ->action(function ($data) {
                     $this->record->logs()->create([
                         'message' => 'Tarefa agendada para ' . Carbon::createFromDate($data['scheduled_at'])->format('d/m/Y H:i') . ' por ' . auth()->user()->name,
@@ -41,7 +41,7 @@ class EditServiceRequest extends EditRecord
                 ->label('Iniciar tarefa')
                 ->color('success')
                 ->requiresConfirmation()
-                ->visible(fn () => auth()->user()->is_admin && $this->record->status === ServiceRequestStatusEnum::OPEN)
+                ->visible(fn() => auth()->user()->is_admin && $this->record->status === ServiceRequestStatusEnum::OPEN)
                 ->action(
                     function () {
                         $this->record->logs()->create([
@@ -61,7 +61,7 @@ class EditServiceRequest extends EditRecord
             Actions\Action::make('finish_processing')
                 ->label('Finalizar tarefa')
                 ->requiresConfirmation()
-                ->visible(fn () => auth()->user()->is_admin && $this->record->status === ServiceRequestStatusEnum::IN_PROGRESS)
+                ->visible(fn() => auth()->user()->is_admin && $this->record->status === ServiceRequestStatusEnum::IN_PROGRESS)
                 ->action(function () {
                     $this->record->update([
                         'status' => ServiceRequestStatusEnum::CLOSED,
@@ -88,12 +88,15 @@ class EditServiceRequest extends EditRecord
                     ]);
                     $this->record->delete();
                 })
-                ->visible(fn () => auth()->user()->is_admin),
+                ->visible(fn() => auth()->user()->is_admin),
         ];
     }
 
     protected function authorizeAccess(): void
     {
+        if (auth()->user()->is_admin) {
+            return;
+        }
         abort_unless($this->record->created_by === auth()->id(), 403);
     }
 

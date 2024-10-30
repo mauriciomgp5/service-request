@@ -28,6 +28,7 @@ class User extends Authenticatable implements FilamentUser
         'avatar_path',
         'is_admin',
         'is_active',
+        'approved_at',
     ];
 
     /**
@@ -68,5 +69,10 @@ class User extends Authenticatable implements FilamentUser
             return false;
         }
         return false;
+    }
+
+    public function isAdmin(): bool
+    {
+        return auth()->user()?->is_admin ?? false;
     }
 }
