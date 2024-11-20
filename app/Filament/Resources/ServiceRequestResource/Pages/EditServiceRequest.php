@@ -41,7 +41,7 @@ class EditServiceRequest extends EditRecord
                 ->label('Iniciar tarefa')
                 ->color('success')
                 ->requiresConfirmation()
-                ->visible(fn() => auth()->user()->is_admin && $this->record->status === ServiceRequestStatusEnum::OPEN)
+                // ->visible(fn() => auth()->user()->is_admin && $this->record->status === ServiceRequestStatusEnum::OPEN)
                 ->action(
                     function () {
                         $this->record->logs()->create([
